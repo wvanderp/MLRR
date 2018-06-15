@@ -14,6 +14,7 @@ TEST_SET = 100
 def createSet(number, filename):
     writer = tf.python_io.TFRecordWriter(filename)
     for i in range(number):
+        print("building: "+filename+" #"+str(i))
         boxBoard, startX, startY, goalX, goalY, program = createBoardAndProgram(BOARD_SIZE_X, BOARD_SIZE_Y, NO_OF_BOXES,
                                                                                 LENGTH_OF_PROGRAM)
         startBoard = [[0] * BOARD_SIZE_X for i in range(BOARD_SIZE_Y)]
