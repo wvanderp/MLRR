@@ -21,9 +21,25 @@ def load_data(filename, no_of_records):
     return tf.train.batch([boards, program], no_of_records)
 
 
-#
-# define variables here
-#
+training_steps = 1000
+
+
+def loss(x, y):
+    # compute loss over training data X and expected outputs Y
+    return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=combine(x), labels=y))
+
+
+def train(loss_func):
+    # train / adjust model parameters according to computed total loss
+    learning_rate = 0.01
+    return tf.train.GradientDescentOptimizer(learning_rate).minimize(loss_func)
+
+
+def train(loss_func):
+    # train / adjust model parameters according to computed total loss
+    learning_rate = 0.01
+    return tf.train.GradientDescentOptimizer(learning_rate).minimize(loss_func)
+
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
@@ -34,9 +50,14 @@ coord = tf.train.Coordinator()
 # queue runner for filename queue
 threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-#
-# insert your code here
-#
+# actual training loop
+for step in range(training_steps):
+    sess.run(train_op)
+    # log loss every step for visualisation in TensorBoard
+    writer.add_summary(sess.run(summary), step + initial_step)
+    # for debugging and learning purposes, see how the loss gets decremented thru training steps
+    if step % 100 == 0:
+        print("loss: ", sess.run(loss_func))
 
 coord.request_stop()
 coord.join(threads)
