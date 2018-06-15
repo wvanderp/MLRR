@@ -5,9 +5,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 from createBoardAndProgram import *
-#from solveRobotsRandom import *
-from solveRobotsBruteForce import *
-#from solveRobots import *
+from solveRobots import *
 
 SQUARE_SIZE = 50
 BOARD_SIZE_X = 12
@@ -38,13 +36,14 @@ WEST = 3
 ANIMATION_SPEED = 0.005
 GAMES_TO_PLAY = 100
 
+
 class Display:
     def __init__(self, windowName):
         glutInit()
-        glutInitDisplayMode(GLUT_MULTISAMPLE | GLUT_DOUBLE) 
+        glutInitDisplayMode(GLUT_MULTISAMPLE | GLUT_DOUBLE)
         glutInitWindowSize(WIDTH, HEIGHT)
         glutCreateWindow(windowName.encode("ascii"))
-        glOrtho(0, WIDTH, 0, HEIGHT, -1, 1) 
+        glOrtho(0, WIDTH, 0, HEIGHT, -1, 1)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_BLEND)
         glEnable(GL_LINE_SMOOTH)
@@ -54,9 +53,9 @@ class Display:
             glViewport(0, 0, int(y * WIDTH / HEIGHT), y)
         else:
             glViewport(0, 0, x, int(x * HEIGHT / WIDTH))
-            
+
     animationCallbacks = []
-    
+
     def animate(self):
         for i in Display.animationCallbacks:
             i()
@@ -70,7 +69,7 @@ class Display:
     def drawString(self, x, y, colour, string):
         glColor(colour)
         glLineWidth(2)
-        #glDisable(GL_MULTISAMPLE)
+        # glDisable(GL_MULTISAMPLE)
         glPushMatrix()
         glDepthMask(GL_FALSE)
         glTranslate(x, y, 0);
@@ -83,12 +82,12 @@ class Display:
             glutStrokeCharacter(GLUT_STROKE_ROMAN, ord(i))
         glDepthMask(GL_TRUE)
         glPopMatrix()
-        #glEnable(GL_MULTISAMPLE)
-        
+        # glEnable(GL_MULTISAMPLE)
+
     def drawSquare(self, x, y):
         glColor(GREY)
         glRecti(x * SQUARE_SIZE + 1, y * SQUARE_SIZE + 1, (x + 1) * SQUARE_SIZE - 1, (y + 1) * SQUARE_SIZE - 1)
-    
+
     def drawBox(self, x, y):
         glColor(YELLOW)
         glRecti(x * SQUARE_SIZE + 1, y * SQUARE_SIZE + 1, (x + 1) * SQUARE_SIZE - 1, (y + 1) * SQUARE_SIZE - 1)
@@ -110,8 +109,8 @@ class Display:
         glEnd()
 
     def drawDisk(self, cx, cy, r):
-        c = 0.951056516295154 # cos(18°)
-        s = 0.309016994374947 # sin(18°)
+        c = 0.951056516295154  # cos(18°)
+        s = 0.309016994374947  # sin(18°)
         x = r
         y = 0
         glBegin(GL_POLYGON)
@@ -127,11 +126,11 @@ class Display:
 
     def drawGoal(self, x, y):
         self.drawString((x + 0.5) * SQUARE_SIZE, (y + 0.4) * SQUARE_SIZE, GREEN, "goal")
-            
+
     def drawRobot(self, x, y, colour, steps):
         glColor(colour)
         self.drawDisk((x + 0.5) * SQUARE_SIZE, (y + 0.75) * SQUARE_SIZE, 0.2 * SQUARE_SIZE)
-        self.drawDisk((x + 0.5) * SQUARE_SIZE, (y + 0.35) * SQUARE_SIZE, 0.3 * SQUARE_SIZE)        
+        self.drawDisk((x + 0.5) * SQUARE_SIZE, (y + 0.35) * SQUARE_SIZE, 0.3 * SQUARE_SIZE)
         self.drawString((x + 0.5) * SQUARE_SIZE, (y + 0.2) * SQUARE_SIZE, WHITE, str(steps))
 
     def drawScore(self, played, won, lost):
@@ -139,7 +138,10 @@ class Display:
             score = round(100 * won / played)
         else:
             score = "--"
-        self.drawString(WIDTH / 2, HEIGHT - 0.7 * SCORE_TEXT_HEIGHT, WHITE, "Games played: " + str(played) + "; Won: " + str(won) + "; Lost: " + str(lost) + "; Score: " + str(score) + "%") 
+        self.drawString(WIDTH / 2, HEIGHT - 0.7 * SCORE_TEXT_HEIGHT, WHITE,
+                        "Games played: " + str(played) + "; Won: " + str(won) + "; Lost: " + str(
+                            lost) + "; Score: " + str(score) + "%")
+
 
 class Robot:
     def __init__(self, x, y, colour, board, program):
@@ -197,11 +199,12 @@ class Robot:
             self.go(self.parent)
         glutPostRedisplay()
 
+
 class Main:
     played = 0
     won = 0
     lost = 0
-    
+
     def __init__(self):
         self.display = Display("Ricochet Robots")
         glutDisplayFunc(self.draw)
@@ -223,8 +226,8 @@ class Main:
             self.board[startY][startX] = START
             self.board[goalY][goalX] = GOAL
             self.robot = Robot(startX, startY, RED, self.board, program)
-            self.robot.go(self)        
-            
+            self.robot.go(self)
+
     def draw(self):
         self.display.startDraw()
         for y in range(BOARD_SIZE_Y):
@@ -242,6 +245,8 @@ class Main:
         self.display.endDraw()
 
     def keyboardFunc(self, key, x, y):
-        if key == b"\x1b": # escape
+        if key == b"\x1b":  # escape
             exit()
+
+
 Main()
