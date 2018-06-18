@@ -44,12 +44,6 @@ def train(loss_func):
     return tf.train.GradientDescentOptimizer(learning_rate).minimize(loss_func)
 
 
-def train(loss_func):
-    # train / adjust model parameters according to computed total loss
-    learning_rate = 0.01
-    return tf.train.GradientDescentOptimizer(learning_rate).minimize(loss_func)
-
-
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 X, Y = load_data("training_set.tfrecord", 1000)
@@ -61,12 +55,12 @@ threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
 # actual training loop
 for step in range(training_steps):
-    sess.run(train_op)
+    sess.run(train(loss))
     # log loss every step for visualisation in TensorBoard
     writer.add_summary(sess.run(summary), step + initial_step)
     # for debugging and learning purposes, see how the loss gets decremented thru training steps
     if step % 100 == 0:
-        print("loss: ", sess.run(loss_func))
+        print("loss: ", sess.run(loss))
 
 coord.request_stop()
 coord.join(threads)

@@ -16,7 +16,7 @@ def init():
 
 
 def inference(X):
-# your code to run the network on the provided input
+    # your code to run the network on the provided input
 
 def solve(boxBoard, startBoard, goalBoard):
     X = tf.reshape(tf.cast([boxBoard, startBoard, goalBoard], tf.float32), [1, 3 * BOARD_SIZE_X * BOARD_SIZE_Y])
