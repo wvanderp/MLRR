@@ -7,16 +7,25 @@ LENGTH_OF_PROGRAM = 4
 
 
 def load_data(filename, no_of_records):
+    # injects a file name into the ingestion pipeline of tenserflow
     filename_queue = tf.train.string_input_producer([filename])
+    # creates a reader class
     reader = tf.TFRecordReader()
+    # uses the reader and the read cue to read the tfrecord
     _, serialized = reader.read(filename_queue)
+    # parses the text for programs and boards
     features = tf.parse_single_example(serialized, features={
         "program": tf.FixedLenFeature([], tf.string),
         "boards": tf.FixedLenFeature([], tf.string)})
+    # interprate the string as a vector of tf.unit8
     program_raw = tf.decode_raw(features['program'], tf.uint8)
+    # reshape the vector to the same vector
     program = tf.cast(tf.reshape(program_raw, [4]), tf.int32)
+    # interprate the sting as tf.uint8
     boards_raw = tf.decode_raw(features['boards'], tf.uint8)
+    # recast the board vector to float and a length of 3 * bord lengte * bord breete
     boards = tf.cast(tf.reshape(boards_raw, [3 * BOARD_SIZE_X * BOARD_SIZE_Y]), tf.float32)
+    # return a traing batch
     # this causes records to be read
     return tf.train.batch([boards, program], no_of_records)
 
